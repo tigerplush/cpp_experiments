@@ -1,4 +1,6 @@
+#include <map>
 #include <functional>
+#include <vector>
 
 #include "Schedule.hpp"
 
@@ -22,6 +24,9 @@ namespace App
     /// ```
     class App
     {
+    private:
+        std::map<ScheduleLabel, std::vector<std::function<void()>>> m_systems;
+        ScheduleRunner m_scheduleRunner;
     public:
         App &add_system(const ScheduleLabel& schedule, std::function<void()> system);
         void run();
