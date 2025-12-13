@@ -1,6 +1,15 @@
 #include <iostream>
 
+#include "App.hpp"
+
+void print_hello_world()
+{
+    std::cout << "Hello World" << std::endl;
+}
+
 int main()
 {
-    std::cout << "Hello World!" << std::endl;
+    App::App()
+        .add_system(App::Schedule::Update, print_hello_world)
+        .run();
 }
