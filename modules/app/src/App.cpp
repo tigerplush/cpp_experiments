@@ -7,7 +7,7 @@ namespace App
         m_scheduleRunner.run([this](const ScheduleLabel& schedule) {
             for(auto system: m_systems[schedule])
             {
-                system();
+                system(m_world);
             }
         });
     }
