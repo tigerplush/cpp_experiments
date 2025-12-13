@@ -28,7 +28,21 @@ namespace App
         std::map<ScheduleLabel, std::vector<std::function<void()>>> m_systems;
         ScheduleRunner m_scheduleRunner;
     public:
-        App &add_system(const ScheduleLabel& schedule, std::function<void()> system);
+
+        template<typename Fn>
+        App &add_system(const ScheduleLabel& schedule, Fn&& system)
+        {
+            if(m_systems.find(schedule) != m_systems.end())
+            {
+                m_systems[schedule].push_back(system);
+            }
+            else
+            {
+                m_systems[schedule] = std::vector<std::function<void()>> { system };
+            }
+            return *this;
+        }
+
         void run();
     };
 } // namespace App

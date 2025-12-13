@@ -1,1 +1,2 @@
+add_subdirectory(basic_ecs)
 add_subdirectory(hello_world)
