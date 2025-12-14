@@ -13,18 +13,21 @@ namespace ECS
     {
     private:
         World &m_world;
-        
-        template<typename T>
-        struct is_filter : std::false_type {};
 
-        template<typename T>
+        template <typename T>
+        struct is_filter : std::false_type
+        {
+        };
+
+        template <typename T>
         static constexpr bool is_component = !is_filter<T>::value;
 
-        template<typename... Ts>
+        template <typename... Ts>
         struct filter_components;
 
-        template<>
-        struct filter_components<> {
+        template <>
+        struct filter_components<>
+        {
             using type = std::tuple<>;
         };
 
@@ -40,14 +43,19 @@ namespace ECS
 
     public:
         using ComponentTuple = typename filter_components<Components...>::type;
-        template<typename Tuple>
+        template <typename Tuple>
         struct tuple_to_refs;
-        
-        template<typename... Components>
+
+        template <typename... Components>
         struct tuple_to_refs<std::tuple<Components...>>
         {
-            using type = std::tuple<Components&...>;
+            // Helper to convert component type to reference or value
+            template <typename T>
+            using to_ref = std::conditional_t<std::is_same_v<T, Entity>, Entity, T &>;
+
+            using type = std::tuple<to_ref<Components>...>;
         };
+
         using RefTuple = typename tuple_to_refs<ComponentTuple>::type;
         class Iterator
         {
@@ -58,7 +66,7 @@ namespace ECS
             template <size_t... Is>
             RefTuple get_components(std::index_sequence<Is...>) const
             {
-                return std::tie(m_world.get_component<std::tuple_element_t<Is, ComponentTuple>>(m_index)...);
+                return RefTuple(m_world.get_component<std::tuple_element_t<Is, ComponentTuple>>(m_index)...);
             }
 
         public:
@@ -69,7 +77,7 @@ namespace ECS
 
             RefTuple operator*() const
             {
-                return  get_components(std::make_index_sequence<std::tuple_size_v<ComponentTuple>>{});
+                return get_components(std::make_index_sequence<std::tuple_size_v<ComponentTuple>>{});
             }
 
             Iterator &operator++()

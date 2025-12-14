@@ -25,7 +25,7 @@ void startup(ECS::Commands& commands)
     commands.spawn(Position(5, 5));
 }
 
-void print_hello_world(ECS::Query<ECS::Entity, Position> query)
+void print_hello_world(ECS::Query<ECS::Entity, Position&> query)
 {
     Log::DEBUG << "There are " << query.count() << " entities that fit the query";
     for(auto [entity, position]: query)

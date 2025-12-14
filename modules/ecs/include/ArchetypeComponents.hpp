@@ -11,11 +11,12 @@ namespace ECS
     {
     private:
         std::set<std::type_index> m_signature;
+
     public:
-        template<typename... Components>
+        template <typename... Components>
         ArchetypeComponents(Components... components)
         {
-            m_signature = { std::type_index(typeid(Components))...};
+            m_signature = {std::type_index(typeid(Components))...};
         }
 
         bool operator==(const ArchetypeComponents &other) const
@@ -25,16 +26,16 @@ namespace ECS
 
         friend std::ostream &operator<<(std::ostream &os, const ArchetypeComponents &archetype_components)
         {
-            if(archetype_components.m_signature.empty())
+            if (archetype_components.m_signature.empty())
             {
                 os << "{}";
                 return os;
             }
             os << "{ ";
             size_t index = 0;
-            for(auto type_index: archetype_components.m_signature)
+            for (auto type_index : archetype_components.m_signature)
             {
-                if(0 != index)
+                if (0 != index)
                 {
                     os << ", ";
                 }
@@ -42,6 +43,11 @@ namespace ECS
             }
             os << " }";
             return os;
+        }
+
+        const std::set<std::type_index> &get_signature() const
+        {
+            return m_signature;
         }
     };
 } // namespace ECS
