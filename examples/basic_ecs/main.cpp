@@ -15,12 +15,12 @@ void startup(ECS::Commands& commands)
     commands.spawn(Position {});
 }
 
-void print_hello_world(ECS::Query<ECS::Entity> query)
+void print_hello_world(ECS::Query<ECS::Entity, Position> query)
 {
     std::cout << "There are " << query.count() << " entities that fit the query" << std::endl;
-    for(auto entity: query)
+    for(auto [entity, position]: query)
     {
-        std::cout << entity << std::endl;
+        std::cout << entity << " has position " << position << std::endl;
     }
 }
 
