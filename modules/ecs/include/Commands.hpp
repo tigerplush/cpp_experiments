@@ -16,10 +16,10 @@ namespace ECS
     public:
         explicit Commands(World& t_world);
 
-        template<typename T>
-        void spawn(T&& component)
+        template<typename... Components>
+        void spawn(Components... components)
         {
-            m_world.spawn();
+            m_world.spawn(components...);
         }
     };
 } // namespace ECS
