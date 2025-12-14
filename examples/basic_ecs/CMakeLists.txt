@@ -6,4 +6,5 @@ target_link_libraries(basic_ecs
     PRIVATE
         app
         ecs
+        log
 )

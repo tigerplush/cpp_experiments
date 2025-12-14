@@ -27,7 +27,6 @@ namespace ECS
             // if we call .spawn(Position, Name)
             // we get a different archetype
             ArchetypeComponents archetype_components = ArchetypeComponents(components...);
-            std::cout << archetype_components << std::endl;
 
             // now, we look up, if a table for this archetype already exists
             // if yes, we add the entity and it's components to that table

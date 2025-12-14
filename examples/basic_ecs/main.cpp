@@ -3,6 +3,7 @@
 
 #include "App.hpp"
 #include "ECS.hpp"
+#include "Log.hpp"
 
 struct Position : public ECS::Component
 {
@@ -19,17 +20,17 @@ struct Position : public ECS::Component
 
 void startup(ECS::Commands& commands)
 {
-    std::cout << "Startup" << std::endl;
+    Log::DEBUG << "Startup";
     commands.spawn(Position {});
     commands.spawn(Position(5, 5));
 }
 
 void print_hello_world(ECS::Query<ECS::Entity, Position> query)
 {
-    std::cout << "There are " << query.count() << " entities that fit the query" << std::endl;
+    Log::DEBUG << "There are " << query.count() << " entities that fit the query";
     for(auto [entity, position]: query)
     {
-        std::cout << entity << " has position " << position << std::endl;
+        Log::DEBUG << entity << " has position " << position;
         position.x += 1;
         position.y += 1;
     }
@@ -37,6 +38,7 @@ void print_hello_world(ECS::Query<ECS::Entity, Position> query)
 
 int main()
 {
+    Log::Logger::get_instance().set_log_level(LogLevel::Debug);
     App::App()
         .add_system(App::Schedule::Startup, startup)
         .add_system(App::Schedule::Update, print_hello_world)
