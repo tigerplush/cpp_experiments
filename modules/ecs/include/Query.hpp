@@ -13,6 +13,25 @@ namespace ECS
     {
     private:
         World &m_world;
+        template <typename T>
+        static constexpr bool is_valid_query_param()
+        {
+            using Decayed = std::decay_t<T>;
+
+            // Entity must be passed by value
+            if constexpr (std::is_same_v<Decayed, Entity>)
+            {
+                return !std::is_reference_v<T>;
+            }
+            else
+            {
+                return std::is_reference_v<T>;
+            }
+        }
+
+        static_assert((is_valid_query_param<Components>() && ...),
+                      "Query parameters must be: Entity (by value) or Component& (by reference). "
+                      "Use Query<Entity, Position&> not Query<Entity&> or Query<Position>");
 
         template <typename T>
         struct is_filter : std::false_type
