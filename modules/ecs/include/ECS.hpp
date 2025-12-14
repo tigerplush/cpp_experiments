@@ -3,7 +3,7 @@
 
 #include "Commands.hpp"
 #include "Component.hpp"
-#include "Entity.hpp"
+#include "entity/Entity.hpp"
 #include "Query.hpp"
 #include "World.hpp"
 namespace ECS

@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "ArchetypeComponents.hpp"
-#include "Entity.hpp"
+#include "entity/Entity.hpp"
 namespace ECS
 {
     class World
