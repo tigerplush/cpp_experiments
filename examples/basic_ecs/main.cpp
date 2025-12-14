@@ -1,8 +1,7 @@
 #include <iostream>
 
 #include "App.hpp"
-#include "Commands.hpp"
-#include "Query.hpp"
+#include "ECS.hpp"
 
 struct Position : public ECS::Component
 {
@@ -16,7 +15,7 @@ void startup(ECS::Commands& commands)
     commands.spawn(Position {});
 }
 
-void print_hello_world(ECS::Query query)
+void print_hello_world(ECS::Query<ECS::Entity> query)
 {
     std::cout << "Loop" << std::endl;
 }

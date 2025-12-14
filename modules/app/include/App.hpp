@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <vector>
 
-#include "World.hpp"
+#include "ECS.hpp"
 
 #include "Schedule.hpp"
 
@@ -73,12 +73,46 @@ namespace App
         {
             using Traits = function_traits<Fn>;
             // Create a tuple to store the objects
-            auto args = std::tuple{ctx.create<std::remove_reference_t<typename Traits::template arg<Is>::type>>()...};
+            auto args = std::tuple{create<std::remove_reference_t<typename Traits::template arg<Is>::type>>(ctx)...};
             // Apply the function with the stored objects
             std::apply(system, args);
         }
 
+        template <typename T>
+        static constexpr bool always_false = false;
+
+
+        template<typename T>
+        struct is_query : std::false_type {};
+
+        template<typename... Components>
+        struct is_query<ECS::Query<Components...>> : std::true_type {};
+
+        template <typename Args>
+        static Args create(ECS::World& world)
+        {
+            using T = std::decay_t<Args>;
+
+            if constexpr (std::is_same_v<T, ECS::Commands>)
+            {
+                return ECS::Commands(world);
+            }
+            else if constexpr (is_query<T>::value)
+            {
+                return T(world);
+            }
+            else
+            {
+                static_assert(always_false<Args>, "Unsupported system parameter type");
+            }
+        }
+
     public:
+        /// @brief 
+        /// @tparam Fn 
+        /// @param schedule 
+        /// @param system 
+        /// @return 
         template <typename Fn>
         App &add_system(const ScheduleLabel &schedule, Fn &&system)
         {
@@ -92,6 +126,7 @@ namespace App
             return *this;
         }
 
+        /// @brief runs all registered plugins and systems
         void run();
     };
 } // namespace App

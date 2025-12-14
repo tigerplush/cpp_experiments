@@ -3,6 +3,7 @@
 
 namespace ECS
 {
+    /// @brief This is the base component all components have to derive
     struct Component
     {
 
