@@ -8,6 +8,7 @@ add_library(ecs STATIC
 target_link_libraries(ecs
     PUBLIC
         core
+        log
 )
 
 target_include_directories(ecs
