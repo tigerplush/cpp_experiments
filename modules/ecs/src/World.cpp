@@ -9,4 +9,9 @@ namespace ECS
         m_next_id += 1;
         return current_id;
     }
+
+    size_t World::get_entity_count() const
+    {
+        return m_entities.size();
+    }
 }

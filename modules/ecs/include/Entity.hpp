@@ -3,9 +3,9 @@
 
 namespace ECS
 {
-    class Entity
+    struct Entity
     {
-
+        
     };
 } // namespace ECS
 

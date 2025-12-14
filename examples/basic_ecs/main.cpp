@@ -17,7 +17,11 @@ void startup(ECS::Commands& commands)
 
 void print_hello_world(ECS::Query<ECS::Entity> query)
 {
-    std::cout << "Loop" << std::endl;
+    std::cout << "There are " << query.count() << " entities that fit the query" << std::endl;
+    for(auto entity: query)
+    {
+        std::cout << entity << std::endl;
+    }
 }
 
 int main()

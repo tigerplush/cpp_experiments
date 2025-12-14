@@ -13,6 +13,9 @@ namespace ECS
 
     public:
         size_t spawn();
+        /// @brief Returns the number of all currently active entities
+        /// @return 
+        size_t get_entity_count() const;
     };
 } // namespace World
 
