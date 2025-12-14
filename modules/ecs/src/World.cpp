@@ -2,12 +2,12 @@
 
 namespace ECS
 {
-    size_t World::spawn()
+    Entity World::spawn()
     {
-        size_t current_id = m_next_id;
-        m_entities.push_back(current_id);
+        Entity current = Entity(m_next_id);
+        m_entities.push_back(current);
         m_next_id += 1;
-        return current_id;
+        return current;
     }
 
     size_t World::get_entity_count() const

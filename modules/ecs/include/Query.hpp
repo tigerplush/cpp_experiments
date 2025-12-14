@@ -13,60 +13,102 @@ namespace ECS
     {
     private:
         World &m_world;
+        
+        template<typename T>
+        struct is_filter : std::false_type {};
+
+        template<typename T>
+        static constexpr bool is_component = !is_filter<T>::value;
+
+        template<typename... Ts>
+        struct filter_components;
+
+        template<>
+        struct filter_components<> {
+            using type = std::tuple<>;
+        };
+
+        template <typename T, typename... Rest>
+        struct filter_components<T, Rest...>
+        {
+            using rest_type = typename filter_components<Rest...>::type;
+            using type = std::conditional_t<
+                is_component<T>,
+                decltype(std::tuple_cat(std::declval<std::tuple<T>>(), std::declval<rest_type>())),
+                rest_type>;
+        };
 
     public:
+        using ComponentTuple = typename filter_components<Components...>::type;
+        template<typename Tuple>
+        struct tuple_to_refs;
+        
+        template<typename... Components>
+        struct tuple_to_refs<std::tuple<Components...>>
+        {
+            using type = std::tuple<Components&...>;
+        };
+        using RefTuple = typename tuple_to_refs<ComponentTuple>::type;
         class Iterator
         {
+        private:
+            World &m_world;
+            size_t m_index;
+
+            template <size_t... Is>
+            RefTuple get_components(std::index_sequence<Is...>) const
+            {
+                return std::tie(m_world.get_component<std::tuple_element_t<Is, ComponentTuple>>(m_index)...);
+            }
+
         public:
-            Iterator(size_t t_index) : m_index(t_index)
+            Iterator(World &t_world, size_t t_index)
+                : m_world(t_world), m_index(t_index)
             {
             }
 
-            size_t operator*() const
+            RefTuple operator*() const
             {
-                return m_index;
+                return  get_components(std::make_index_sequence<std::tuple_size_v<ComponentTuple>>{});
             }
 
-            Iterator& operator++()
+            Iterator &operator++()
             {
                 m_index += 1;
                 return *this;
             }
 
-            bool operator!=(const Iterator& other) const
+            bool operator!=(const Iterator &other) const
             {
                 return m_index != other.m_index;
             }
 
-            bool operator==(const Iterator& other) const
+            bool operator==(const Iterator &other) const
             {
                 return m_index == other.m_index;
             }
-
-        private:
-            size_t m_index;
         };
 
         explicit Query(World &t_world) : m_world(t_world) {}
 
         Iterator begin()
         {
-            return Iterator(0);
+            return Iterator(m_world, 0);
         }
 
         Iterator end()
         {
-            return Iterator(m_world.get_entity_count());
+            return Iterator(m_world, m_world.get_entity_count());
         }
 
         Iterator begin() const
         {
-            return Iterator(0);
+            return Iterator(m_world, 0);
         }
 
         Iterator end() const
         {
-            return Iterator(m_world.get_entity_count());
+            return Iterator(m_world, m_world.get_entity_count());
         }
     };
 } // namespace ECS
