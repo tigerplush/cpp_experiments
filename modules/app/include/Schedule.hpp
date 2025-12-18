@@ -42,7 +42,6 @@ namespace App
                 {
                     callback(label);
                 }
-                break;
             }
         }
     };

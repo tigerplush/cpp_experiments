@@ -13,6 +13,20 @@ namespace ECS
     private:
         std::vector<Component> m_data;
     public:
+        void emplace_back(const Component& component)
+        {
+            m_data.emplace_back(component);
+        }
+
+        Component& get(size_t index)
+        {
+            return m_data[index];
+        }
+
+        const Component& get(size_t index) const
+        {
+            return m_data[index];
+        }
     };
 } // namespace ECS
 #endif

@@ -64,16 +64,15 @@ namespace ECS
         template <typename Component>
         auto get_component(size_t entity_index) -> std::conditional_t<std::is_same_v<std::decay_t<Component>, Entity>, Entity, Component>
         {
+            EntityMetaData entity_meta = m_entities.at(entity_index);
+            Table &table = m_tables.at(entity_meta.table_id);
             if constexpr (std::is_same_v<std::decay_t<Component>, Entity>)
             {
-                EntityMetaData entity_meta = m_entities.at(entity_index);
-                Table &table = m_tables.at(entity_meta.table_id);
                 return table.get_entities().at(entity_meta.table_row);
             }
             else
             {
-                static std::remove_reference_t<Component> dummy{};
-                return dummy;
+                return table.get_component<std::decay_t<Component>>(entity_meta.table_row);
             }
         }
     };
